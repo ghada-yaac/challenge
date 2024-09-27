@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #bookForm {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <table border="1" id="row">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Auteur</th>
+                <th>Prix (€)</th>
+                <th>Supprimer</th>
+                <th>Editer</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <button id="ajouter">Ajouter un Livre</button>
+    
+    <form id="bookForm">
+        <label for="title">Titre:</label>
+        <input type="text" id="title" required>
+
+        <label for="author">Auteur:</label>
+        <input type="text" id="author" required>
+
+        <label for="price">Prix (€):</label>
+        <input type="number" id="price" required>
+        <button type="button" id="ok">OK</button>
+    </form>
+
+    <script>
+        var books = [
+            { id: 1, titre: 'Atomic Habits', auteur: 'James Clear', prix: 35 },
+            { id: 2, titre: 'Le Crépuscule d\'une Idole', auteur: 'Michel Onfray', prix: 40 }
+        ];
+
+        var tableBody = document.querySelector("#row tbody");
+        var form = document.getElementById("bookForm");
+        var ajout = document.getElementById('ajouter');
+        var editIndex = null;
+
+        ajout.addEventListener("click", function () {
+            form.style.display = "block";
+        });
+
+        function fillTable() {
+            tableBody.innerHTML = ''; 
+            books.forEach(function (book, index) {
+                var row = "<tr><td>" + book.titre + "</td><td>" + book.auteur + "</td><td>" + book.prix + "</td><td><button type='button' class='supp'>Supprimer</button></td><td><button type='button' class='edit'>Editer</button></td></tr>";
+                tableBody.innerHTML += row;
+            });
+
+            document.querySelectorAll('.supp').forEach(function(button, index) {
+                button.addEventListener('click', function() {
+                    books.splice(index, 1); 
+                    fillTable(); 
+                });
+            });
+
+    
+            
+        }
+
+       
+        fillTable();
+
+        document.querySelectorAll('.edit').forEach(function(button, index) {
+                button.addEventListener('click', function() {
+                    editIndex = index;
+                    document.getElementById('title').value = books[index].titre;
+                    document.getElementById('author').value = books[index].auteur;
+                    document.getElementById('price').value = books[index].prix;
+                    form.style.display = "block"; 
+                });
+            });
+
+            document.getElementById("ok").addEventListener("click", function () { 
+            var title = document.getElementById("title").value;
+            var author = document.getElementById("author").value;
+            var price = document.getElementById("price").value;
+
+            if (editIndex !== null) {
+                books[editIndex] = { titre: title, auteur: author, prix: price };
+                editIndex = null; 
+            } else {
+                books.push({ titre: title, auteur: author, prix:price });
+            }
+
+            fillTable(); 
+            form.style.display = "none"; 
+        });
+
+    </script>
+</body>
+</html>
